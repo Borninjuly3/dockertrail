@@ -1,1 +1,18 @@
 # Docker image build notes
+
+Docker image build [option] path / url 
+It builds docker images from a docker file or a context.
+A build context is set of file located at the path or he url. The build process can refer to any file in context. 
+url can be three things, git repository url, prepackage Tarball  and a context file.
+
+Git reposiratory url:
+ All file are recursively fetched. Commit history is not preserved.  
+ All this are temporarily stored on local host before sending it to docker daemon; 
+ The context section is passed in fragments, which is separated by :  colon 
+ 
+ 1) Reference that git will checkout can be a branch tag or remote reference
+ 2) Subdirectory that will be used for build  
+
+Example 
+
+docker image build https://github.com/Borninjuly3/dockertrail.git#master:Image 
