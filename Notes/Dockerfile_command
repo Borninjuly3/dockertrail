@@ -1,1 +1,24 @@
 
+FROM command: any valid dockerfile must start with a from instruction. It initialize the build stage and uses it as base image for subsequent instruction. 
+ARG is only instruction that can precede a FROM instruction. FORM instruction supports the variable declared under ARGs section  FORM can appear multiple time is docker file,. To build multiple image or use one build stage as dependency of other. Each for instruction clears a state created by previous FORM instruction hence you only need to look at the last commit only . 
+An optional name can be gieven to image by using the AS command which follows the FROM command. That name can be invoked in subsequent calls. 
+Tag and digest value are optional builder as tag to be  latest if it  is not specified.
+--platform can be used along with platform if base image has multiple platforms.
+
+Example
+
+ARG codeversion=latest 
+FORM base:${codeversion}
+CMD
+
+FROM extra: ${codeversion}
+CMD
+
+By default ARG instruction cant be used after  from in build stage unless and until it is explicitly called after FROM
+
+ARG VERSION=latest
+FROM busybox:$VERSION
+ARG VERSION
+RUN echo $VERSION 
+
+
