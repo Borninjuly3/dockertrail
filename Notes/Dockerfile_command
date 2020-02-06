@@ -21,4 +21,53 @@ FROM busybox:$VERSION
 ARG VERSION
 RUN echo $VERSION 
 
+CMD
+IT has three form 
+1)	Exe form . CMD [“executable” ,”params1”, “ params2”]
+2)	Shell form :CMD  command params1 params2
+3)	Default parameters to entry point CMD [“params1” , “oarasm2”]
+There can be only one CMD instruction in Docker file .It s purpose is to provide defaults for an executing container. For default entry point both CMD and executable and params are specified in typical JSaon form as mentioned above. The exe form cant be used for normal shell processing. To do shell processing we can either use shell form or exe form in following syntax CMD [“sh”, “-c”, “pwd”]. 
+Example of shell form is 
+FORM ubuntu 
+CMD echo “This is a test”.
+
+RUN
+This instruction has 2 formats : 
+RUN <command> shell form this command is run inside a shell which is /bin/sh –c for linux cmd /s/c for windows .
+RUN [“executable” ,”params1”,”params2”]
+This instruction executes any command on top of current layer to form a new layer.It also commits the result unlike the CMD instruction. The committed image would form the next step to execute and futher instructions in Dockerfile.
+Running RUN instruction and generating commits form the core of docker’s instruction. The Default shell in shell form can be change by using the  SHELL  command.
+We use \ to  run a single run instruction on next line. 
+Example 
+RUN /bin/bash –c ’ source $HOME /.bashrc’ \
+echo $HOME
+Note : Norma; exe forms  doesnot invoke a shell hence normal shell  processing can’t be done using the exe form . 
+Any type of caching created during run instruction  is not invalidated automatically.  It would be re =used in next build step.  Use –no-cahe to invalidated the cahce during execution of docker build command.
+
+LABEL
+They are the key value pairs which are used to include metadata for image formed. It the  value contains spaces it need to be included in “” or by using the backslash. Labels are by default inherited from the base or the parent image. Any new value specified may override the existing value.
+LABEL multi.label1="value1" multi.label2="value2" other="value3"
+Or 
+LABEL multi.label1="value1" \
+      multi.label2="value2" \
+      other="value3"
+
+EXPOSE :
+EXPOSE <port>  [<port>/<protocol>]
+This instruction informs Docker that the container will listen on the specified port durning the run time. You can specify protocol i.e TCP or UDP. If protocol is not specified the default protocol used is UDP.  
+Note the expose instruction never publish any port, you need to specify that in Docker run command. –p (small p) is used to publish and map one or more ports. –P is used publish all the the export ports and map the to higher order ports.
+Example 
+EXPOSE 80/tcp
+EXPOSE 80/udp
+
+ENV : 
+This instruction set’s  environmental variable key to the value. This value will be in environment for all subsequent instruction. There are two ways of using EN instruction
+ENV  key value 
+This type will be only used used to ste one environmental variable at a time. The string after space one will be treated as value including the whitespaces . The value will be interpreted for other environmental variable also. Any quotes included in the value would be removed by default.
+ENV key1=”val1” key2 =”val2”  \
+Key3= “val3”
+This form allows us to set multiple variable at once.and makes use of = sign.
+The value of environment variable declared using ENV instruction perist when the container is in run stage from the resulting image. 
+The value of environmental variable can be view using docker inspect command and changed using  docker run –env command.  
+
 
