@@ -70,4 +70,29 @@ This form allows us to set multiple variable at once.and makes use of = sign.
 The value of environment variable declared using ENV instruction perist when the container is in run stage from the resulting image. 
 The value of environmental variable can be view using docker inspect command and changed using  docker run –env command.  
 
+ADD
+Syntax
+ADD  --chown=<user>:<group> <src> <dest>
+Add it copy files and destination from remote url into destination file system. Multiple src can be specified along with the used of go wild card expression.  The path of source are relative to root build context.
+<dest> can be absolute path or relative path to workdir  into  which files will be copied. 
+Example 
+ADD test relativeDir
+ADD hello* /absoluteDir/
+All new added files or directory have UID and GID of  0 unsless some different UID or GID or username or group name any combination  is specified by using chown command. 
+If container file system doesn’t contain either /etc/passwd or /etc/group the build will fail if we use –chown flag along with add instruction.
+Remote file copied from header will by default have 600 permission if it is copied using http protocol last modified hear will be used t set the mtime.
+NOTE : if we have passed a Dockerfile through stdin using instruction  Docker image build < Dockerfile . then there is no build context. Docker ADD  instruction can add only the remote file. 	You can also pass compressed archive through stdin docker image build < archive.tar.bz  docker file will be at root of archive and rest will be at the context of the build 
+ADD instruction does not support authentication hence if url contains any authentication we need to use RUN wdget or RUN curl command.
+ADD command in validates the cache all following instruction if content of cache have been changed. 
+Source path of add instruction must be inside the context of the build  as docker image build send the context of the build to docker daemon 
+If  file menstion in src url have trailing  “/”  than filename interfered from url is downloaded to dest/filename incase it has a trailing “/’ it downloaded  from url and copied into destionation
+
+If src is directory entire contents of directory are copied including the meta data.
+IF src is local tar archive with a recognized compressed format than it unpacked the  destination directory. source from remote url are not decompressed 
+If destination end with a trailing / than its content are copied into a directory followed by destination.  IF it does not end with a trailing / the content of directory are over written.
+COPY 
+Works in same way as add except some default formatting and uncompressing are missing . 
+There is an additional flag –from=<name|index> which can be used to set source loctionto previous build stage that will be used instead of build context send by the user. Flag also accept build stage started from all the previous instruction
+
+
 
